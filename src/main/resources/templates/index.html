@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+	<head>
+		<title>Spring Boot File Upload with AngularJS</title>
+		<meta charset="utf-8" />
+		<!-- Check other AngularJS version at: -->
+		<!-- https://code.angularjs.org/1.6.9/docs/misc/downloading -->
+		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular.min.js"></script>
+		<script src="/js/MainApp.js"></script>
+		<script src="/js/UploadFileCtrl.js"></script>
+		<script src="/js/GetFilesCtrl.js"></script>
+	</head>
+
+	<body ng-app="MainApp" >
+		      
+		<h1>Spring Boot File Upload with AngularJS</h1>
+		
+		<a th:href="@{/uploadSingleFile}">Upload Single File</a>
+		
+		<div ng-controller="UploadFileController">
+		
+		</div>
+		
+		<div ng-controller="GetFilesController">
+		
+		</div>
+		   
+	</body>
+</html>
