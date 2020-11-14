@@ -21,7 +21,7 @@ public class UploadServiceImpl implements UploadService {
 	public ResponseMetadata save(MultipartFile multipartFile) throws IOException {
 		UploadFile uploadFile = new UploadFile();
 
-		uploadFile.setDocName(multipartFile.getOriginalFilename());
+		uploadFile.setName(multipartFile.getOriginalFilename());
 		uploadFile.setFile(multipartFile.getBytes());
 		uploadFileDao.save(uploadFile);
 

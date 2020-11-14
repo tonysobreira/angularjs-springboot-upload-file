@@ -15,7 +15,7 @@ public class UploadFile {
 	private Integer id;
 
 	@Column
-	private String docName;
+	private String name;
 
 	@Column
 	@Lob
@@ -29,12 +29,12 @@ public class UploadFile {
 		this.id = id;
 	}
 
-	public String getDocName() {
-		return docName;
+	public String getName() {
+		return name;
 	}
 
-	public void setDocName(String docName) {
-		this.docName = docName;
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	public byte[] getFile() {

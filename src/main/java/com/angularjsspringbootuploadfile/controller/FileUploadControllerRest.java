@@ -1,5 +1,7 @@
 package com.angularjsspringbootuploadfile.controller;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.angularjsspringbootuploadfile.form.UploadForm;
+import com.angularjsspringbootuploadfile.form.UploadMultipleForm;
 import com.angularjsspringbootuploadfile.model.UploadFile;
 import com.angularjsspringbootuploadfile.service.ResponseMetadata;
 import com.angularjsspringbootuploadfile.service.UploadService;
@@ -43,7 +46,7 @@ public class FileUploadControllerRest {
 //	public ResponseEntity<?> uploadFile(@RequestPart("file") MultipartFile file) {
 //	public ResponseEntity<?> uploadFile(@RequestParam(value="file") MultipartFile file) throws IOException {
 	@PostMapping("/uploadSingleFile")
-	public ResponseEntity<?> uploadFileMulti(@ModelAttribute UploadForm form) throws Exception {
+	public ResponseEntity<?> uploadFileSingle(@ModelAttribute UploadForm form) throws Exception {
 
 		if (null == form.getFile().getOriginalFilename()) {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -88,5 +91,38 @@ public class FileUploadControllerRest {
     public @ResponseBody List<UploadFile> listAll() {
         return uploadService.findAll();
     }
+    
+    //
+    
+    @PostMapping("/uploadMultipleFiles")
+	public ResponseEntity<?> uploadFileMulti(@ModelAttribute UploadMultipleForm form) throws Exception {
+    	List<ResponseMetadata> responseMetaDataList = new ArrayList<ResponseMetadata>();
+    	
+		System.out.println("Description:" + form.getDescription());
+
+		StringBuilder result = new StringBuilder();
+		
+		try {
+			
+			for (MultipartFile file : form.getFiles()) {
+				storageService.store(file);
+				
+				// DB
+				ResponseMetadata responseMetadata = uploadService.save(file);
+				responseMetaDataList.add(responseMetadata);
+				
+				result.append(file.getOriginalFilename()).append(", ");
+			}
+
+		}
+		// Here Catch IOException only.
+		// Other Exceptions catch by RestGlobalExceptionHandler class.
+		catch (IOException e) {
+			e.printStackTrace();
+			return new ResponseEntity<>("Error: " + e.getMessage(), HttpStatus.BAD_REQUEST);
+		}
+
+		return new ResponseEntity<String>("Files Uploaded: " + result.toString(), HttpStatus.OK);
+	}
 
 }

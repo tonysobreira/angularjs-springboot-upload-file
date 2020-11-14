@@ -1,6 +1,7 @@
 package com.angularjsspringbootuploadfile.controller;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,12 +20,17 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.angularjsspringbootuploadfile.model.UploadFile;
+import com.angularjsspringbootuploadfile.service.UploadService;
 import com.angularjsspringbootuploadfile.storage.StorageFileNotFoundException;
 import com.angularjsspringbootuploadfile.storage.StorageService;
 
 @Controller
 public class FileUploadController {
 
+	@Autowired
+	private UploadService uploadService;
+	
 	private final StorageService storageService;
 
 	@Autowired
@@ -69,6 +75,23 @@ public class FileUploadController {
 	@ExceptionHandler(StorageFileNotFoundException.class)
 	public ResponseEntity<?> handleStorageFileNotFound(StorageFileNotFoundException exc) {
 		return ResponseEntity.notFound().build();
+	}
+	
+	@GetMapping("/uploadMultipleFiles")
+	public String uploadMultipleFiles(Model model) {
+		model.addAttribute("files", storageService.loadAll()
+			.map(path -> MvcUriComponentsBuilder
+			.fromMethodName(FileUploadController.class, "serveFile", path.getFileName().toString())
+			.build().toUri().toString())
+			.collect(Collectors.toList()));
+		
+		List<UploadFile> list = uploadService.findAll();
+		
+		for (UploadFile uploadFile : list) {
+			System.out.println(uploadFile.getName());
+		}
+		
+		return "uploadMultipleFiles";
 	}
 
 }
